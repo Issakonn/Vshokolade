@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Vshokolade — Клубника в шоколаде | Актобе</title>
+  <meta name="description" content="Клубника в бельгийском шоколаде ручной работы. Доставка по Актобе. Магазин Vshokolade." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero__bg-overlay"></div>
+
+    <div class="hero__topbar">
+      <div class="lang-switch" aria-label="Language switch">
+        <button class="lang-switch__btn active" data-lang="ru" type="button">RU</button>
+        <button class="lang-switch__btn" data-lang="kz" type="button">KZ</button>
+      </div>
+    </div>
+
+    <div class="hero__content">
+      <div class="hero__logo-wrap">
+        <span class="hero__emoji">🍓</span>
+      </div>
+      <h1 class="hero__title">Vshokolade</h1>
+      <p class="hero__subtitle" id="hero-subtitle"></p>
+      <div class="hero__badges" id="hero-badges"></div>
+      <a href="#tab-catalog" class="btn-hero" id="hero-catalog-btn"></a>
+    </div>
+
+    <div class="hero__scroll-hint">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </header>
+
+  <nav class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" data-tab="catalog" type="button"><i class="fas fa-box-open"></i><span data-i18n="tabs.catalog"></span></button>
+    <button class="tab-btn" data-tab="boxes" type="button"><i class="fas fa-heart"></i><span data-i18n="tabs.boxes"></span></button>
+    <button class="tab-btn" data-tab="dubai" type="button"><i class="fas fa-star"></i><span data-i18n="tabs.dubai"></span></button>
+    <button class="tab-btn" data-tab="info" type="button"><i class="fas fa-info-circle"></i><span data-i18n="tabs.info"></span></button>
+  </nav>
+
+  <main class="main-content" id="catalog">
+    <section class="tab-section active" id="tab-catalog">
+      <div class="cart-topbar" id="cart-topbar" style="display:none;">
+        <span id="cart-topbar-text"></span>
+        <button class="btn-cart-open" id="cart-topbar-btn" type="button" onclick="openCart()"></button>
+      </div>
+      <div id="catalog-content"></div>
+    </section>
+
+    <section class="tab-section" id="tab-boxes">
+      <div id="special-content"></div>
+    </section>
+
+    <section class="tab-section" id="tab-dubai">
+      <div id="dubai-content"></div>
+    </section>
+
+    <section class="tab-section" id="tab-info">
+      <div id="info-content"></div>
+    </section>
+  </main>
+
+  <button class="fab-cart" id="fab-cart" style="display:none;" onclick="openCart()" type="button" aria-label="Open cart">
+    <i class="fas fa-shopping-bag"></i>
+    <span class="fab-cart__count" id="fab-count">0</span>
+  </button>
+
+  <div class="modal-overlay" id="cart-modal" style="display:none;">
+    <div class="modal">
+      <button class="modal__close" onclick="closeCart()" type="button"><i class="fas fa-times"></i></button>
+      <div class="modal__header">
+        <h2 class="modal__title" data-i18n="cart.title"></h2>
+      </div>
+      <div class="modal__body">
+        <div id="cart-items"></div>
+        <div class="cart-total" id="cart-total" style="display:none;">
+          <span data-i18n="cart.total"></span>
+          <strong id="total-price">0 ₸</strong>
+        </div>
+        <div class="cart-empty" id="cart-empty">
+          <span>🛒</span>
+          <p data-i18n="cart.empty"></p>
+          <p class="cart-empty__hint" data-i18n="cart.emptyHint"></p>
+        </div>
+      </div>
+      <div class="modal__footer" id="cart-footer" style="display:none;">
+        <button class="btn-checkout" onclick="openOrder()" type="button" data-i18n="cart.checkout"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="order-modal" style="display:none;">
+    <div class="modal">
+      <button class="modal__close" onclick="closeOrder()" type="button"><i class="fas fa-times"></i></button>
+      <div class="modal__header">
+        <h2 class="modal__title" data-i18n="order.title"></h2>
+        <p class="modal__sub" id="order-product-name"></p>
+      </div>
+      <div class="modal__body">
+        <form id="order-form" onsubmit="submitOrder(event)">
+          <div class="form-group">
+            <label class="form-label" for="input-name" data-i18n="order.nameLabel"></label>
+            <input type="text" id="input-name" class="form-input" data-i18n-placeholder="order.namePlaceholder" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-phone" data-i18n="order.phoneLabel"></label>
+            <input type="tel" id="input-phone" class="form-input" data-i18n-placeholder="order.phonePlaceholder" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-comment" data-i18n="order.commentLabel"></label>
+            <textarea id="input-comment" class="form-input form-textarea" data-i18n-placeholder="order.commentPlaceholder"></textarea>
+          </div>
+          <div class="order-summary" id="order-summary"></div>
+          <button type="submit" class="btn-submit">
+            <i class="fas fa-heart"></i>
+            <span data-i18n="order.submit"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="success-modal" style="display:none;">
+    <div class="modal modal--success">
+      <div class="success-icon">🍓</div>
+      <h2 class="success-title" data-i18n="success.title"></h2>
+      <p class="success-text" id="success-text"></p>
+      <p class="success-sub"><span data-i18n="success.phoneLabel"></span> <strong id="success-phone"></strong></p>
+      <a id="wa-confirm-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-submit" style="background:#25D366; text-decoration:none; margin-bottom:1rem;">
+        <i class="fab fa-whatsapp"></i>
+        <span data-i18n="success.whatsapp"></span>
+      </a>
+      <button class="btn-submit" onclick="closeSuccess()" type="button" style="background:var(--text-soft);">
+        <span data-i18n="success.back"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-overlay modal-overlay--center" id="image-modal" style="display:none;">
+    <div class="modal modal--image">
+      <button class="modal__close" onclick="closeImagePreview()" type="button" aria-label="Close image preview"><i class="fas fa-times"></i></button>
+      <div class="modal__body">
+        <div class="image-preview">
+          <div class="image-preview__img-wrap">
+            <img id="image-preview-img" class="image-preview__img" src="" alt="" />
+          </div>
+          <div class="image-preview__caption" id="image-preview-caption"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__container">
+      <div class="footer__brand">🍓 Vshokolade</div>
+      <div class="footer__socials">
+        <a href="https://www.instagram.com/vshokolade04/" target="_blank" rel="noopener noreferrer" class="social-link instagram" aria-label="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://wa.me/77024967362" target="_blank" rel="noopener noreferrer" class="social-link whatsapp" aria-label="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </div>
+      <p class="footer__text" id="footer-address"></p>
+      <p class="footer__text footer__text--small" id="footer-tagline"></p>
+    </div>
+  </footer>
+
+  <script src="js/catalog-source.js"></script>
+  <script src="js/site-content.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function () {
+      const s = document.createElement("script");
+      s.src = "https://app.nextbot.kz/chat-widget-bundle-ver3.js";
+      s.async = true;
+      s.onload = function () {
+        initializeChatWidget({
+          agentId: "7bd50c53-15d2-4c1e-83c8-a724ae9cb5fe",
+          server: "https://app.nextbot.kz",
+          chatIconNumberSvg: "4",
+          chatIconLineColor: "#fff",
+          chatIconBackgroundColor: "#1a73e8",
+          secondsToAutoinvite: "0",
+          messageAutoInvite: "Здравствуйте! Я могу помочь с любыми вопросами!",
+          bgColorAutoInvite: "#9ecceb",
+          textColorAutoInvite: "#000000",
+          widgetBottom: "30",
+          widgetRight: "30"
+        });
+      };
+      s.onerror = function () {
+        console.error("Не удалось загрузить chat-widget-bundle-ver3.js");
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
+</body>
+</html>
